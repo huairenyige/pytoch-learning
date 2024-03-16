@@ -1,0 +1,61 @@
+#1）desig model (input ,output size ,forward pass)
+#2) construct loss and optimizer(优化器)
+#3) Training loop
+# forward pass：compute prediction
+#backward pass;graditents
+#update weight
+
+import torch
+import torch.nn as nn
+
+
+# f= w*x
+# f = 2*x
+
+X = torch.tensor([[1],[2],[3],[4]],dtype=torch.float32)
+Y = torch.tensor([[2],[4],[6],[8]],dtype=torch.float32)
+
+# w = 0.0 
+X_test = torch.tensor([5], dtype=torch.float32)
+n_samples, n_features = X.shape
+print(n_samples,n_features)
+
+input_size = n_features
+output_size = n_features
+model = nn.Linear(input_size,output_size)
+
+# #gradient
+# #MSE = 1/N *(W*-Y)**2
+# #dJ/dw = 1/N 2*(w*x-y)
+
+# def gradient(x,y, y_predicted):
+#     return np.dot(2*x, y_predicted-y).mean()
+
+print(f'Prediction before training； f(5) = {model(X_test).item():.3f}')
+
+learning_rate = 0.03  #学习效率
+n_iters = 1000  #迭代次数
+
+loss = nn.MSELoss()
+
+optimizer = torch.optim.SGD(model.parameters(), lr = learning_rate) #SGD批量梯度下降算法
+
+for epoch in range(n_iters):
+    y_pred = model(X)
+
+    l = loss(Y,y_pred)
+
+    l.backward() 
+
+    optimizer.step()
+
+    optimizer.zero_grad()
+
+    if epoch % 100 == 0:
+        [w, b] = model.parameters()
+        print(f'epoch {epoch+1}: w = {w[0][0]:.3f}, loss = {l:.8f}')
+
+print(f'Prediction after training: f(5) = {model(X_test).item():.3f}')
+
+
+
